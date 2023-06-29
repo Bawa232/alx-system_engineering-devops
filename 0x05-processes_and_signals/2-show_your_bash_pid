@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# script that display list of processes with "bash"
+
+ps -ef | grep "bash"
