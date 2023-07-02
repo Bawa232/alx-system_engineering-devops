@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#infinite loop
+
+detect() {
+	echo "I am invincible!!!"
+}
+
+i=123
+while [ $i == 123 ]; do
+	echo "To infinity and beyond"
+done
+
+trap detect SIGTERM
