@@ -8,6 +8,7 @@ detect() {
 i=123
 while [ $i == 123 ]; do
 	echo "To infinity and beyond"
+	sleep 2
 done
 
 trap detect SIGTERM
