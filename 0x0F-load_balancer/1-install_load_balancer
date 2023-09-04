@@ -1,54 +1,14 @@
 #!/usr/bin/env bash
-# Script that installs and configures an HAproxy load balancer on a new Ubuntu server
-
-# Update the hosts file with the correct hostnames
-echo "149312-web-01" | sudo tee -a /etc/hostname
-echo "149312-web-02" | sudo tee -a /etc/hostname
-sudo sed -i 's/^.*ubuntu$/127.0.0.1 localhost 149312-web-01 149312-web-02/' /etc/hosts
-sudo hostnamectl set-hostname "$(cat /etc/hostname)"
-
-# Update the system
-sudo apt update
-sudo apt upgrade -y
-
-# Install HAproxy
-sudo apt-get install haproxy -y
-
-# Configure HAproxy
-sudo cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.original
-sudo cat <<EOL | sudo tee /etc/haproxy/haproxy.cfg
-global
-    log /dev/log    local0
-    log /dev/log    local1 notice
-    chroot /var/lib/haproxy
-    stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
-    stats timeout 30s
-    user haproxy
-    group haproxy
-    daemon
-
-defaults
-    log global
-    mode    http
-    option  httplog
-    option  dontlognull
-    timeout connect 5000
-    timeout client  50000
-    timeout server  50000
-
-frontend web-frontend
-    bind *:80
-    mode http
-    default_backend web-backend
-
-backend web-backend
-    balance roundrobin
-    server 149312-web-01 54.87.215.0:80 check
-    server 149312-web-02 100.25.16.32:80 check
-EOL
-
-# Enable HAproxy service
-sudo sed -i 's/ENABLED=0/ENABLED=1/' /etc/default/haproxy
-
-# Restart HAproxy
+# install haproxy
+SETUP="frontend myapp
+        bind *:80
+        default_backend myapp_servers
+backend myapp_servers
+        balance roundrobin
+        server server1 54.87.215.0
+        server server2 100.25.16.32
+"
+sudo apt-get -y update
+sudo apt-get -y install haproxy
+sudo sh -c 'echo "$SETUP" >> /etc/haproxy/haproxy.cfg'
 sudo service haproxy restart
