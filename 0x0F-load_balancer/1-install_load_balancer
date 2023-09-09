@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+<<<<<<< HEAD
 # Configuring HAProxy load balancer
 
 # update the package list 
@@ -30,3 +31,18 @@ sudo echo "$balancer" >> /etc/haproxy/haproxy.cfg
 
 # Start the HAProxy service
 sudo service haproxy start
+=======
+# install haproxy
+SETUP="frontend myapp
+        bind *:80
+        default_backend myapp_servers
+backend myapp_servers
+        balance roundrobin
+        server server1 54.87.215.0
+        server server2 100.25.16.32
+"
+sudo apt-get -y update
+sudo apt-get -y install haproxy
+sudo sh -c 'echo "$SETUP" >> /etc/haproxy/haproxy.cfg'
+sudo service haproxy restart
+>>>>>>> 708fbb0bc9487694265fb44595bf42add32222f9
