@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# getting information of our domains
+
+
+dns_info() {
+  dom=$1
+  sub=$2
+
+  if [ -z "$sub" ]; then
+    subs=("www" "lb-01" "web-01" "web-02")
+  else
+    subs=("$sub")
+  fi
+
+  for sb in "{subs[@]}"; do
+    record=$(dig $sb.$dom | grep -A1 'ANSWER SECTION:' | awk '{print $4}')
+    destination=$(dig +short $db.$dom | awk '{print $1}')
+    echo "The subdomain $sb is a $record record and points to $destination"
+  done
+ }
