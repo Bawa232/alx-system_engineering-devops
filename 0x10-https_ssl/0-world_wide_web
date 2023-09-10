@@ -12,9 +12,11 @@ dns_info() {
     subs=("$sub")
   fi
 
-  for sb in "{subs[@]}"; do
+  for sb in "${subs[@]}"; do
     record=$(dig $sb.$dom | grep -A1 'ANSWER SECTION:' | awk '{print $4}')
-    destination=$(dig +short $db.$dom | awk '{print $1}')
+    destination=$(dig +short $sb.$dom | awk '{print $1}')
     echo "The subdomain $sb is a $record record and points to $destination"
   done
- }
+}
+
+dns_info "$@"
